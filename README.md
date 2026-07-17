@@ -1,0 +1,46 @@
+# Portfolio — Duc Ngo
+
+Personal portfolio website: a clean, minimalist single-page site with light/dark mode.
+
+## Tech Stack
+
+- [Next.js 16](https://nextjs.org) (App Router, static output)
+- TypeScript (strict mode)
+- [Tailwind CSS v4](https://tailwindcss.com) (CSS-first config, no `tailwind.config`)
+- [shadcn/ui](https://ui.shadcn.com) + Base UI primitives
+- [Framer Motion](https://www.framer.com/motion/) (scroll-triggered animations, reduced-motion aware)
+- [Lucide](https://lucide.dev) + [Simple Icons](https://simpleicons.org)
+- next-themes (class-based dark mode, light default)
+
+## Getting Started
+
+```bash
+yarn install
+yarn dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+Other scripts:
+
+```bash
+yarn build      # production build
+yarn lint       # ESLint
+yarn typecheck  # tsc --noEmit
+```
+
+## Project Structure
+
+```
+app/                  # layout, page, globals.css, SEO routes (sitemap, robots, OG image)
+components/sections/  # one file per page section (Hero, Experience, Projects, Skills, Contact)
+components/ui/        # reusable components (Navbar, Footer, ThemeToggle, ...)
+lib/constants.ts      # ALL site content/data lives here — edit this to update the site
+public/images/        # images
+```
+
+## Editing Content
+
+All text, links, experience entries, projects, and skills are defined in [`lib/constants.ts`](lib/constants.ts). Components never hardcode content — update the constants and the whole site follows.
+
+Design tokens (colors for both themes, radius, fonts) live in [`app/globals.css`](app/globals.css).
