@@ -4,15 +4,20 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Code2, FileText, Heart, Sparkles } from "lucide-react";
 import {
-  siCss,
-  siHtml5,
-  siJavascript,
+  siFigma,
+  siFramer,
   siNextdotjs,
-  siNodedotjs,
   siReact,
+  siTailwindcss,
+  siTypescript,
 } from "simple-icons";
 import { Button } from "@/components/ui/button";
-import { PERSONAL_INFO, PILLARS, TECH_STACK } from "@/lib/constants";
+import {
+  PERSONAL_INFO,
+  PILLARS,
+  TECH_STACK,
+  TOOL_STACK,
+} from "@/lib/constants";
 import { EASE } from "@/lib/animation";
 
 /** Masked line reveal: line slides up from behind an overflow-hidden mask. */
@@ -38,13 +43,21 @@ function MaskedLine({
 }
 
 // ─── Tech stack: monochrome brand icons (simple-icons path data) ─────────────
+// simple-icons dropped the VS Code mark over trademark policy, so its path
+// lives here — same approach as the brand icons in components/ui/icons.tsx.
+const VS_CODE_ICON = {
+  title: "Visual Studio Code",
+  path: "M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z",
+};
+
 const TECH_ICONS: Record<string, { title: string; path: string }> = {
-  HTML: siHtml5,
-  CSS: siCss,
-  JavaScript: siJavascript,
+  TypeScript: siTypescript,
   React: siReact,
-  "Node.js": siNodedotjs,
+  "Tailwind CSS": siTailwindcss,
+  "Framer Motion": siFramer,
   "Next.js": siNextdotjs,
+  "VS Code": VS_CODE_ICON,
+  Figma: siFigma,
 };
 
 function TechIcon({ label }: { label: string }) {
@@ -91,10 +104,7 @@ export default function Hero() {
   const [firstName, ...restName] = PERSONAL_INFO.name.split(" ");
 
   return (
-    <section
-      id="home"
-      className="relative flex flex-col px-6 pt-20 pb-16"
-    >
+    <section id="home" className="relative flex flex-col px-6 pt-20 pb-16">
       {/* Grid pattern + gradient blobs background */}
       <div
         aria-hidden="true"
@@ -181,7 +191,11 @@ export default function Hero() {
                 current favorite tech stack/tools:
               </span>
               <div className="flex flex-wrap items-center gap-4">
-                {TECH_STACK.map(({ label }) => (
+                {TECH_STACK.map((label) => (
+                  <TechIcon key={label} label={label} />
+                ))}
+                <span aria-hidden="true" className="h-4 w-px bg-border" />
+                {TOOL_STACK.map((label) => (
                   <TechIcon key={label} label={label} />
                 ))}
               </div>
@@ -214,7 +228,7 @@ export default function Hero() {
                 className="absolute bottom-0 right-0 w-[66.3%] aspect-[400/600]"
               >
                 <Image
-                  src="/images/hero-portrait.png"
+                  src="/images/hero-portrait-image.png"
                   alt={`Portrait of ${PERSONAL_INFO.name}`}
                   fill
                   priority

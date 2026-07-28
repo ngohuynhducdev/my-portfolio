@@ -4,7 +4,7 @@ Personal portfolio website: a clean, minimalist single-page site with light/dark
 
 ## Tech Stack
 
-- [Next.js 16](https://nextjs.org) (App Router, static output)
+- [Next.js 16](https://nextjs.org) (App Router, statically prerendered)
 - TypeScript (strict mode)
 - [Tailwind CSS v4](https://tailwindcss.com) (CSS-first config, no `tailwind.config`)
 - [shadcn/ui](https://ui.shadcn.com) + Base UI primitives

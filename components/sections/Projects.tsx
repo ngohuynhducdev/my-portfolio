@@ -68,7 +68,7 @@ function ProjectCard({ project }: { project: Project }) {
                 className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
               >
                 <ExternalLink size={13} aria-hidden="true" />
-                View Case
+                Live Demo
               </a>
             )}
             {hasUrl(project.githubUrl) && (
@@ -132,7 +132,7 @@ export default function Projects() {
         {/* Project grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
           {PROJECTS.map((project) => (
-            <ProjectCard key={project.title} project={project} />
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       </div>
