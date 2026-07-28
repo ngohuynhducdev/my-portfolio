@@ -72,7 +72,7 @@ export default function Contact() {
           {/* Phone + location */}
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
             <a
-              href={`tel:${PERSONAL_INFO.phone.replace(/\s|\(|\)|-/g, "")}`}
+              href={`tel:${PERSONAL_INFO.phoneHref}`}
               className="flex items-center gap-1.5 hover:text-primary transition-colors"
             >
               <Phone size={13} aria-hidden="true" />
