@@ -4,11 +4,11 @@ import { motion } from "framer-motion";
 import { SKILLS } from "@/lib/constants";
 import { EASE } from "@/lib/animation";
 import SectionWrapper from "@/components/ui/SectionWrapper";
+import SectionHeading from "@/components/ui/SectionHeading";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-type Skill = { readonly name: string; readonly level: "frequent" | "occasional" };
+type Skill = (typeof SKILLS)[keyof typeof SKILLS][number];
 
-// Bar length per usage level — tweak widths here (same accent color for all).
+// Bar length encodes how often the skill is used.
 const BAR_WIDTHS: Record<Skill["level"], string> = {
   frequent: "w-full",
   occasional: "w-1/3",
@@ -21,7 +21,7 @@ function SkillBadge({
   delay,
 }: {
   name: string;
-  level: "frequent" | "occasional";
+  level: Skill["level"];
   delay?: number;
 }) {
   const badge = (
@@ -84,50 +84,23 @@ function CategoryBlock({
 }
 
 const CATEGORIES = [
-  { key: "languages" as const, label: "Programming Languages" },
-  { key: "technologies" as const, label: "Technologies" },
-  { key: "tools" as const, label: "Software and Tools" },
-];
+  { key: "languages", label: "Programming Languages" },
+  { key: "technologies", label: "Technologies" },
+  { key: "tools", label: "Software and Tools" },
+] as const;
 
 // ─── Section ─────────────────────────────────────────────────────────────────
 export default function Skills() {
   return (
     <SectionWrapper id="skills" className="py-16 px-6">
       <div className="max-w-7xl mx-auto flex flex-col gap-14">
-        {/* Header */}
-        <div className="flex flex-col items-center gap-4 text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-3xl sm:text-4xl font-bold text-foreground"
-          >
-            Technical Expertise
-          </motion.h2>
+        <SectionHeading
+          title="Technical Expertise"
+          subtitle="The bar under each label shows how often I use it:"
+        />
 
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.25, ease: EASE }}
-            className="h-1 w-16 rounded-full bg-primary origin-left"
-          />
-
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-muted-foreground max-w-xl text-sm sm:text-base"
-          >
-            The bar under each label shows how often I use it:
-          </motion.p>
-        </div>
-
-        {/* Category blocks */}
         <div className="flex flex-col gap-12">
-          {/* Legend — same badge style as the skills, lives with them */}
+          {/* Legend — same badge style as the skills, so it reads as a key */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

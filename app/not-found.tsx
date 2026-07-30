@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
@@ -21,13 +22,10 @@ export default function NotFound() {
       <p className="text-muted-foreground max-w-md">
         The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all"
-      >
+      <Button variant="cta" size="cta" render={<Link href="/" />}>
         <ArrowLeft size={16} />
         Back to home
-      </Link>
+      </Button>
     </main>
   );
 }
