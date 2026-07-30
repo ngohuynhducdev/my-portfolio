@@ -83,6 +83,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <MotionProvider>
+            {/* First tab stop: lets keyboard users jump the header's eight
+                controls. Off-screen until focused, then pinned over the bar. */}
+            <a
+              href="#main"
+              className="fixed top-3 left-3 z-60 -translate-y-20 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-transform focus:translate-y-0"
+            >
+              Skip to content
+            </a>
             <Navbar />
             {children}
             <BackToTop />
