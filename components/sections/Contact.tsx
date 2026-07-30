@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { PERSONAL_INFO } from "@/lib/constants";
 import SectionWrapper from "@/components/ui/SectionWrapper";
+import SectionHeading from "@/components/ui/SectionHeading";
+import { Button } from "@/components/ui/button";
 import { EASE } from "@/lib/animation";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
@@ -21,32 +23,8 @@ export default function Contact() {
   return (
     <SectionWrapper id="contact" className="py-16 px-6">
       <div className="max-w-7xl mx-auto flex flex-col gap-14">
-        {/* Header */}
-        <div className="flex flex-col items-center gap-4 text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-3xl sm:text-4xl font-bold text-foreground"
-          >
-            Get In Touch
-          </motion.h2>
+        <SectionHeading title="Get In Touch" />
 
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{
-              duration: 0.5,
-              delay: 0.25,
-              ease: EASE,
-            }}
-            className="h-1 w-16 rounded-full bg-primary origin-left"
-          />
-        </div>
-
-        {/* Direct contact block */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -60,17 +38,19 @@ export default function Contact() {
             me is a direct email.
           </p>
 
-          {/* Email CTA */}
-          <a
-            href={`mailto:${PERSONAL_INFO.email}`}
-            className="inline-flex max-w-full items-center gap-2 rounded-lg px-4 sm:px-6 min-h-11 py-2 text-sm sm:text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all"
+          {/* Email CTA — long addresses have to wrap on narrow screens, so the
+              button's default nowrap and fixed height are both relaxed here. */}
+          <Button
+            variant="cta"
+            size="cta"
+            render={<a href={`mailto:${PERSONAL_INFO.email}`} />}
+            className="max-w-full h-auto min-h-11 py-2 whitespace-normal"
           >
             <Mail size={16} aria-hidden="true" className="shrink-0" />
             <span className="break-all">{PERSONAL_INFO.email}</span>
-          </a>
+          </Button>
 
-          {/* Phone + location */}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
             <a
               href={`tel:${PERSONAL_INFO.phoneHref}`}
               className="flex items-center gap-1.5 hover:text-primary transition-colors"
@@ -84,7 +64,6 @@ export default function Contact() {
             </span>
           </div>
 
-          {/* Socials */}
           <div className="flex items-center gap-3">
             {SOCIALS.map(({ icon, label, href }) => (
               <a
