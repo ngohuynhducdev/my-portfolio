@@ -2,23 +2,26 @@
 export const SITE = {
   name: "Duc Ngo — Front-End Developer",
   shortName: "Duc Ngo",
-  // Navbar/footer wordmark — split in two for the two-tone logo.
+  // Split in two so the logo can colour the halves differently.
   brand: { first: "duc", second: "dev" },
   description:
     "Portfolio of Duc Ngo — front-end developer with 4 years building web applications with React, Next.js, and TypeScript at Gameloft.",
   url: "https://ngohuynhducdev.vercel.app",
-  repoUrl: "https://github.com/ngohuynhducdev/my-portfolio",
   ogImageAlt: "Duc Ngo — Front-End Developer portfolio",
   locale: "en_US",
 } as const;
 
 // ─── Navigation Links ─────────────────────────────────────────────────────────
+// Single source of truth for the page's sections: the navbar renders from this
+// list and the IntersectionObserver that drives the active-link state observes
+// exactly the same ids. Adding a section is one edit — the two can't drift.
+// Order must match the render order in app/page.tsx.
 export const NAV_LINKS = [
-  { label: "Home", href: "#home" },
-  { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
+  { id: "about", label: "About" },
+  { id: "experience", label: "Experience" },
+  { id: "projects", label: "Projects" },
+  { id: "skills", label: "Skills" },
+  { id: "contact", label: "Contact" },
 ] as const;
 
 // ─── Personal Information ────────────────────────────────────────────────────
@@ -26,7 +29,6 @@ export const PERSONAL_INFO = {
   name: "Duc Ngo",
   title: "Front-End Developer",
   tagline: "who loves building intuitive, clean and modern web experiences.",
-  bio: "Front-End Developer with 4 years of experience building web applications with React, Next.js, and TypeScript at Gameloft. Coming from a graphic design background, I care about interfaces that are clean, fast, and maintainable — and I enjoy owning products end-to-end, from first commit to production.",
   email: "ngohuynhducdev@gmail.com",
   phone: "0939 166 553",
   // E.164 for the tel: link — the display string above stays local format.
@@ -119,7 +121,6 @@ export const EXPERIENCE = [
     role: "Front-End Developer",
     company: "Gameloft",
     period: "May 2022 — Present",
-    current: true,
     bullets: [
       "Built and maintained responsive, high-traffic web pages and marketing sites for Gameloft's global products using React, Next.js, and TypeScript.",
       "Improved page-load performance through code splitting, image optimization, and bundle-size reduction.",

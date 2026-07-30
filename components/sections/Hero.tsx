@@ -19,6 +19,7 @@ import {
   TOOL_STACK,
 } from "@/lib/constants";
 import { EASE } from "@/lib/animation";
+import { scrollToSection } from "@/lib/scroll";
 
 /** Masked line reveal: line slides up from behind an overflow-hidden mask. */
 function MaskedLine({
@@ -50,7 +51,11 @@ const VS_CODE_ICON = {
   path: "M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z",
 };
 
-const TECH_ICONS: Record<string, { title: string; path: string }> = {
+/** Every label in TECH_STACK / TOOL_STACK. Keyed this way so adding a stack
+ *  entry without an icon is a type error instead of a silently missing icon. */
+type StackLabel = (typeof TECH_STACK)[number] | (typeof TOOL_STACK)[number];
+
+const TECH_ICONS: Record<StackLabel, { title: string; path: string }> = {
   TypeScript: siTypescript,
   React: siReact,
   "Tailwind CSS": siTailwindcss,
@@ -60,25 +65,20 @@ const TECH_ICONS: Record<string, { title: string; path: string }> = {
   Figma: siFigma,
 };
 
-function TechIcon({ label }: { label: string }) {
-  const icon = TECH_ICONS[label];
-  if (!icon) return null;
+function TechIcon({ label }: { label: StackLabel }) {
   return (
-    <span
-      title={label}
+    <svg
+      role="img"
+      viewBox="0 0 24 24"
+      width={26}
+      height={26}
+      fill="currentColor"
       className="text-muted-foreground/70 hover:text-foreground transition-colors"
     >
-      <svg
-        role="img"
-        aria-label={label}
-        viewBox="0 0 24 24"
-        width={26}
-        height={26}
-        fill="currentColor"
-      >
-        <path d={icon.path} />
-      </svg>
-    </span>
+      {/* Serves as both the hover tooltip and the accessible name. */}
+      <title>{label}</title>
+      <path d={TECH_ICONS[label].path} />
+    </svg>
   );
 }
 
@@ -96,16 +96,10 @@ const PILLAR_ACCENTS = {
 } as const;
 
 export default function Hero() {
-  const scrollTo = (id: string) => {
-    // Default behavior follows the CSS scroll-behavior rule (reduced-motion aware).
-    document.getElementById(id)?.scrollIntoView();
-  };
-
   const [firstName, ...restName] = PERSONAL_INFO.name.split(" ");
 
   return (
-    <section id="home" className="relative flex flex-col px-6 pt-20 pb-16">
-      {/* Grid pattern + gradient blobs background */}
+    <section id="about" className="relative flex flex-col px-6 pt-20 pb-16">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
@@ -119,12 +113,11 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* ── Left: greeting + headline ── */}
           <div className="flex flex-col gap-5 w-full">
-            {/* Small muted greeting */}
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: EASE }}
-              className="text-lg sm:text-xl font-semibold text-muted-foreground"
+              className="text-xl sm:text-2xl font-semibold text-muted-foreground"
             >
               hi!{" "}
               <motion.span
@@ -137,7 +130,9 @@ export default function Hero() {
               </motion.span>
             </motion.p>
 
-            {/* One-line headline: first name in accent */}
+            {/* 7xl waits for xl: at lg the text column is only ~456px and the
+                headline needs ~537px at that size, so it would wrap to two
+                lines. */}
             <h1 className="text-5xl sm:text-6xl xl:text-7xl font-extrabold leading-tight tracking-tight text-foreground">
               <MaskedLine delay={0.15}>
                 I&apos;m <span className="text-primary">{firstName}</span>
@@ -145,7 +140,6 @@ export default function Hero() {
               </MaskedLine>
             </h1>
 
-            {/* Sub copy: bold title inside muted sentence */}
             <div className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-md">
               <MaskedLine delay={0.3}>
                 a{" "}
@@ -156,7 +150,6 @@ export default function Hero() {
               </MaskedLine>
             </div>
 
-            {/* CTAs: solid violet + quiet RESUME link */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -164,8 +157,9 @@ export default function Hero() {
               className="flex flex-wrap items-center gap-5 mt-2"
             >
               <Button
-                onClick={() => scrollTo("contact")}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold px-6 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all"
+                variant="cta"
+                size="cta"
+                onClick={() => scrollToSection("contact")}
               >
                 Get in Touch
               </Button>
@@ -180,7 +174,6 @@ export default function Hero() {
               </a>
             </motion.div>
 
-            {/* Tech stack: monochrome brand icons */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -209,31 +202,46 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.35, ease: EASE }}
             className="relative hidden lg:flex items-center justify-end"
           >
-            {/* Organic corner-cut mask. Taller than the text column, so the
-                grid's items-center naturally overflows it above and below —
-                no manual translate needed. */}
-            <div className="relative w-[30rem] xl:w-[42rem] aspect-[603/590] mask-portrait">
-              {/* Soft violet glow, clipped by the same mask */}
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 bg-linear-to-t from-primary/20 via-primary/0 dark:from-primary/10 dark:via-primary/0"
-              />
+            {/* Soft violet halo pooling under the portrait. Deliberately
+                OUTSIDE the mask: anything painted inside gets clipped to the
+                mask's straight top and left edges, and its corner step then
+                reads as a hard staircase rather than as design. Dark mode
+                leans on it to separate the black hoodie from the near-black
+                background. */}
+            <div
+              aria-hidden="true"
+              className="absolute bottom-0 right-0 w-120 h-80 rounded-full blur-[90px] bg-primary/20 dark:bg-primary/30"
+            />
+
+            {/* Organic corner-cut mask (the 603x590 shape in .mask-portrait);
+                its one job is curving the bottom of the portrait. The box is
+                ~1.5x the visible portrait — the image fills only its right
+                66.3% — so it is deliberately wider and taller than the grid
+                column. shrink-0 stops flex from clamping it to the column and
+                dragging the portrait down; the overhang is empty mask area
+                that clears the text, and pointer-events-none keeps it inert. */}
+            <div className="relative shrink-0 pointer-events-none w-152 xl:w-184 aspect-603/590 mask-portrait">
               {/* Portrait fades and scales in once the layout has settled.
-                  Anchored bottom-right at its native aspect ratio (400:600)
-                  — not stretched to fill the wider 603:590 mask box. */}
+                  Occupies the right 400 of the mask's 603 units (66.3%), at the
+                  PNG's own 1064x1479 ratio — matching the ratio is what makes
+                  bottom-0 actually sit on the mask's bottom edge. A mismatched
+                  box would letterbox the contained image and float it upward. */}
               <motion.div
                 initial={{ opacity: 0, scale: 1.06 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.9, delay: 0.55, ease: EASE }}
-                className="absolute bottom-0 right-0 w-[66.3%] aspect-[400/600]"
+                className="absolute bottom-0 right-0 w-[66.3%] aspect-1064/1479"
               >
                 <Image
                   src="/images/hero-portrait-image.png"
                   alt={`Portrait of ${PERSONAL_INFO.name}`}
                   fill
                   priority
-                  sizes="(min-width: 1280px) 32rem, 23rem"
-                  className="object-contain dark:brightness-[.82]"
+                  /* Rendered width is 66.3% of the mask: ~31rem at xl, ~25rem
+                     at lg. Below lg the whole block is display:none, so 1px
+                     stops the priority preload fetching it on mobile. */
+                  sizes="(min-width: 1280px) 31rem, (min-width: 1024px) 25rem, 1px"
+                  className="object-contain"
                 />
               </motion.div>
             </div>
@@ -265,7 +273,7 @@ export default function Hero() {
                     {title}
                   </span>
                 </div>
-                <p className="px-3 pt-3 pb-1 text-sm text-muted-foreground leading-relaxed">
+                <p className="px-3 pt-3 pb-1 text-sm sm:text-base text-muted-foreground leading-relaxed">
                   {description}
                 </p>
               </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -8,13 +8,75 @@ import { NAV_LINKS, PERSONAL_INFO } from "@/lib/constants";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import Logo from "@/components/ui/Logo";
+import { scrollToSection } from "@/lib/scroll";
+
+type SectionId = (typeof NAV_LINKS)[number]["id"];
+
+/** GitHub + LinkedIn, followed by the divider that separates them from the
+ *  theme toggle. p-2/-m-2 grows the touch target past 24px without shifting
+ *  layout, so the same markup serves the desktop and mobile bars. */
+function SocialLinks() {
+  return (
+    <>
+      {(
+        [
+          ["GitHub", PERSONAL_INFO.socials.github, GithubIcon],
+          ["LinkedIn", PERSONAL_INFO.socials.linkedin, LinkedinIcon],
+        ] as const
+      ).map(([label, href, Icon]) => (
+        <a
+          key={label}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={label}
+          className="p-2 -m-2 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <Icon size={18} />
+        </a>
+      ))}
+      <span aria-hidden="true" className="h-4 w-px bg-border" />
+    </>
+  );
+}
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
+  // Annotated so the state widens to every nav id — inferring it from the
+  // initial value would pin it to the first one.
+  const [activeSection, setActiveSection] = useState<SectionId>(
+    NAV_LINKS[0].id,
+  );
   const headerRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Two independent inputs to the active-link state, kept in refs so either
+  // one changing can re-resolve the answer without stale-closure trouble.
+  const inBand = useRef(new Set<string>());
+  const atBottom = useRef(false);
+  const maxScroll = useRef(0);
+
+  // The observer only reports *changes* in intersection, so it can't be the
+  // sole source of truth: once the page bottoms out we pin the last link, and
+  // scrolling back up emits no new entry for the section that was already in
+  // the band — leaving it permanently unreachable. Resolving from the current
+  // state of both signals instead makes the answer order-independent.
+  const syncActive = useCallback(() => {
+    if (atBottom.current) {
+      setActiveSection(NAV_LINKS[NAV_LINKS.length - 1].id);
+      return;
+    }
+    // Last match wins: when the band straddles a boundary both sections are in
+    // it, and the lower one is the one being scrolled into.
+    for (let i = NAV_LINKS.length - 1; i >= 0; i--) {
+      if (inBand.current.has(NAV_LINKS[i].id)) {
+        setActiveSection(NAV_LINKS[i].id);
+        return;
+      }
+    }
+    // Nothing in the band (a gap between sections): keep the previous link.
+  }, []);
 
   // Close the mobile menu on taps outside the header, and on Escape —
   // returning focus to the toggle so keyboard users keep their place.
@@ -39,12 +101,38 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-  // Blur in navbar background when user scrolls past 20px
+  // Measured out of the scroll handler: reading scrollHeight forces layout,
+  // and doing that on every scroll event is a reflow per frame. The observer
+  // catches content growing (fonts, images settling); the resize listener
+  // catches viewport-height-only changes, which leave the document box alone.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const measure = () => {
+      maxScroll.current =
+        document.documentElement.scrollHeight - window.innerHeight;
+    };
+    measure();
+
+    const ro = new ResizeObserver(measure);
+    ro.observe(document.documentElement);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  // Blurs in the navbar background past 20px, and keeps `atBottom` current —
+  // the last section can never reach the observer band, because the page runs
+  // out of scroll first.
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      atBottom.current = window.scrollY >= maxScroll.current - 2;
+      syncActive();
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [syncActive]);
 
   // Track active section: a section is "active" while it crosses a narrow
   // band around 40% of the viewport height. Unlike a visibility threshold,
@@ -52,28 +140,26 @@ export default function Navbar() {
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        entries.forEach(({ target, isIntersecting }) => {
+          if (isIntersecting) inBand.current.add(target.id);
+          else inBand.current.delete(target.id);
         });
+        syncActive();
       },
       { rootMargin: "-40% 0px -55% 0px" },
     );
 
-    NAV_LINKS.forEach(({ href }) => {
-      const el = document.getElementById(href.slice(1));
+    NAV_LINKS.forEach(({ id }) => {
+      const el = document.getElementById(id);
       if (el) obs.observe(el);
     });
 
     return () => obs.disconnect();
-  }, []);
+  }, [syncActive]);
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = (id: SectionId) => {
     setMenuOpen(false);
-    const id = href.slice(1);
-    const el = document.getElementById(id);
-    // Default "auto" behavior follows the CSS scroll-behavior rule,
-    // which already respects prefers-reduced-motion.
-    if (el) el.scrollIntoView();
+    scrollToSection(id);
   };
 
   return (
@@ -87,12 +173,11 @@ export default function Navbar() {
       )}
     >
       <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative">
-        {/* Logo */}
         <a
-          href="#home"
+          href={`#${NAV_LINKS[0].id}`}
           onClick={(e) => {
             e.preventDefault();
-            handleNavClick("#home");
+            handleNavClick(NAV_LINKS[0].id);
           }}
           className="transition-opacity hover:opacity-80"
         >
@@ -101,13 +186,12 @@ export default function Navbar() {
 
         {/* Desktop nav links — centered */}
         <ul className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1">
-          {NAV_LINKS.map(({ label, href }) => {
-            const id = href.slice(1);
+          {NAV_LINKS.map(({ id, label }) => {
             const isActive = activeSection === id;
             return (
-              <li key={href}>
+              <li key={id}>
                 <button
-                  onClick={() => handleNavClick(href)}
+                  onClick={() => handleNavClick(id)}
                   className={cn(
                     "relative px-3 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer",
                     isActive
@@ -128,52 +212,13 @@ export default function Navbar() {
           })}
         </ul>
 
-        {/* Desktop: social icons | theme toggle */}
         <div className="hidden md:flex items-center gap-4">
-          <a
-            href={PERSONAL_INFO.socials.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <GithubIcon size={18} />
-          </a>
-          <a
-            href={PERSONAL_INFO.socials.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <LinkedinIcon size={18} />
-          </a>
-          <span aria-hidden="true" className="h-4 w-px bg-border" />
+          <SocialLinks />
           <ThemeToggle />
         </div>
 
-        {/* Mobile: GitHub + LinkedIn | theme toggle + hamburger */}
         <div className="flex md:hidden items-center gap-3">
-          {/* p-2/-m-2 grows the touch target past 24px without shifting layout */}
-          <a
-            href={PERSONAL_INFO.socials.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-            className="p-2 -m-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <GithubIcon size={18} />
-          </a>
-          <a
-            href={PERSONAL_INFO.socials.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-            className="p-2 -m-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <LinkedinIcon size={18} />
-          </a>
-          <span aria-hidden="true" className="h-4 w-px bg-border" />
+          <SocialLinks />
           <ThemeToggle />
           <button
             ref={menuButtonRef}
@@ -205,12 +250,12 @@ export default function Navbar() {
             {/* Capped below the fixed header so every item stays reachable
                 on short (landscape) viewports */}
             <ul className="flex flex-col px-6 py-4 gap-1 max-h-[calc(100dvh-4rem)] overflow-y-auto">
-              {NAV_LINKS.map(({ label, href }) => {
-                const isActive = activeSection === href.slice(1);
+              {NAV_LINKS.map(({ id, label }) => {
+                const isActive = activeSection === id;
                 return (
-                  <li key={href}>
+                  <li key={id}>
                     <button
-                      onClick={() => handleNavClick(href)}
+                      onClick={() => handleNavClick(id)}
                       className={cn(
                         "w-full text-left px-3 py-2.5 rounded-md text-sm font-medium transition-colors cursor-pointer",
                         isActive
@@ -225,7 +270,7 @@ export default function Navbar() {
               })}
               <li className="pt-2">
                 <button
-                  onClick={() => handleNavClick("#contact")}
+                  onClick={() => handleNavClick("contact")}
                   className="w-full rounded-full py-2.5 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
                 >
                   Hire Me
