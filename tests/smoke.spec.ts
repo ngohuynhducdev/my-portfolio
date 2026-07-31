@@ -47,6 +47,33 @@ test.describe("page", () => {
   });
 });
 
+test.describe("404", () => {
+  test("keeps the navbar useful", async ({ page, isMobile }) => {
+    await page.goto("/no-such-page");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(
+      "Page not found",
+    );
+    // The skip link needs a target here too.
+    await expect(page.locator("#main")).toHaveCount(1);
+
+    // Sections don't exist on this route, so a nav click has to leave for the
+    // home page rather than scroll nowhere.
+    if (isMobile) await page.getByRole("button", { name: "Open menu" }).click();
+    const scope = isMobile
+      ? page.locator("#mobile-menu")
+      : page.getByRole("navigation", { name: "Main" });
+    await scope.getByRole("button", { name: "Projects", exact: true }).click();
+
+    await expect(page).toHaveURL(/\/#projects$/);
+    await expect(page.locator("#projects")).toHaveCount(1);
+  });
+
+  test("marks no section as current", async ({ page }) => {
+    await page.goto("/no-such-page");
+    await expect(page.locator('button[aria-current="true"]')).toHaveCount(0);
+  });
+});
+
 test.describe("skip link", () => {
   test("is the first tab stop and lands on main", async ({ page }) => {
     await page.goto("/");

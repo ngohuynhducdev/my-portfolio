@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -48,6 +49,8 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState<SectionId>(
     NAV_LINKS[0].id,
   );
+  const router = useRouter();
+  const onHome = usePathname() === "/";
   const headerRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -157,9 +160,12 @@ export default function Navbar() {
     return () => obs.disconnect();
   }, [syncActive]);
 
+  // The navbar also renders on /404, where none of the sections exist and
+  // scrolling would silently do nothing — send those clicks home instead.
   const handleNavClick = (id: SectionId) => {
     setMenuOpen(false);
-    scrollToSection(id);
+    if (document.getElementById(id)) scrollToSection(id);
+    else router.push(`/#${id}`);
   };
 
   return (
@@ -177,7 +183,7 @@ export default function Navbar() {
         className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative"
       >
         <a
-          href={`#${NAV_LINKS[0].id}`}
+          href={onHome ? `#${NAV_LINKS[0].id}` : "/"}
           onClick={(e) => {
             e.preventDefault();
             handleNavClick(NAV_LINKS[0].id);
@@ -190,7 +196,8 @@ export default function Navbar() {
         {/* Desktop nav links — centered */}
         <ul className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1">
           {NAV_LINKS.map(({ id, label }) => {
-            const isActive = activeSection === id;
+            // Off the home page there is no current section to mark.
+            const isActive = onHome && activeSection === id;
             return (
               <li key={id}>
                 <button
@@ -257,7 +264,8 @@ export default function Navbar() {
                 on short (landscape) viewports */}
             <ul className="flex flex-col px-6 py-4 gap-1 max-h-[calc(100dvh-4rem)] overflow-y-auto">
               {NAV_LINKS.map(({ id, label }) => {
-                const isActive = activeSection === id;
+                // Off the home page there is no current section to mark.
+            const isActive = onHome && activeSection === id;
                 return (
                   <li key={id}>
                     <button
