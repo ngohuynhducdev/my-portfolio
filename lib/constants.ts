@@ -21,6 +21,7 @@ export const NAV_LINKS = [
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
   { id: "skills", label: "Skills" },
+  { id: "education", label: "Education" },
   { id: "contact", label: "Contact" },
 ] as const;
 
@@ -142,6 +143,22 @@ export const EXPERIENCE = [
 /** Rendered under the experience list — the pre-development background. */
 export const EXPERIENCE_NOTE =
   "Earlier: 4 years as a Graphic Designer before transitioning into front-end development via CyberSoft Bootcamp.";
+
+// ─── Education ────────────────────────────────────────────────────────────────
+export const EDUCATION = [
+  {
+    id: "cybersoft",
+    school: "CyberSoft Academy",
+    program: "Bootcamp Front-End Website",
+    period: "Sep 2021 — Mar 2022",
+  },
+  {
+    id: "it-college",
+    school: "Information Technology College",
+    program: "Software Engineering",
+    period: "2014 — 2017",
+  },
+] as const;
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 export const PROJECTS = [

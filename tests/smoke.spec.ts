@@ -1,7 +1,21 @@
 import { test, expect, type Page } from "@playwright/test";
 
-const SECTIONS = ["about", "experience", "projects", "skills", "contact"];
-const LABELS = ["About", "Experience", "Projects", "Skills", "Contact"];
+const SECTIONS = [
+  "about",
+  "experience",
+  "projects",
+  "skills",
+  "education",
+  "contact",
+];
+const LABELS = [
+  "About",
+  "Experience",
+  "Projects",
+  "Skills",
+  "Education",
+  "Contact",
+];
 
 /** Height of the fixed header — every scroll target should stop just below it. */
 const HEADER = 64;
@@ -121,12 +135,17 @@ test.describe("desktop navigation", () => {
     await page.goto("/");
     await expect(activeLabel(page)).toHaveText("About");
 
+    // The observer only counts a section while it crosses a narrow band at
+    // ~40% of the viewport, so aim each section's middle at that band. A fixed
+    // offset from the top misses sections shorter than the distance to it.
     const stops: number[] = [];
     for (const id of SECTIONS.slice(1)) {
       stops.push(
         await page.locator(`#${id}`).evaluate((el) => {
           const s = el as HTMLElement;
-          return s.offsetTop + 100;
+          return Math.round(
+            s.offsetTop + s.offsetHeight / 2 - window.innerHeight * 0.42,
+          );
         }),
       );
     }
@@ -148,8 +167,9 @@ test.describe("desktop navigation", () => {
     await jumpTo(page, 99999);
     await expect(activeLabel(page)).toHaveText("Contact");
 
-    await jumpTo(page, stops[stops.length - 2]); // back into Skills
-    await expect(activeLabel(page)).toHaveText("Skills");
+    // Back into the section before the last one, whichever that is.
+    await jumpTo(page, stops[stops.length - 2]);
+    await expect(activeLabel(page)).toHaveText(LABELS[LABELS.length - 2]);
 
     await jumpTo(page, 0);
     await expect(activeLabel(page)).toHaveText("About");
