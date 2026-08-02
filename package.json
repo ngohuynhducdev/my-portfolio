@@ -2,6 +2,14 @@
   "name": "portfolio",
   "version": "0.1.0",
   "private": true,
+  "description": "Personal portfolio of Duc Ngo \u2014 front-end developer. Next.js App Router, TypeScript, Tailwind CSS v4.",
+  "author": "Duc Ngo <ngohuynhducdev@gmail.com> (https://ngohuynhducdev.vercel.app)",
+  "license": "MIT",
+  "homepage": "https://ngohuynhducdev.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ngohuynhducdev/my-portfolio.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

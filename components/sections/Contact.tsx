@@ -53,7 +53,7 @@ export default function Contact() {
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
             <a
               href={`tel:${PERSONAL_INFO.phoneHref}`}
-              className="flex items-center gap-1.5 hover:text-primary transition-colors"
+              className="flex items-center gap-1.5 py-3 -my-3 hover:text-primary transition-colors"
             >
               <Phone size={13} aria-hidden="true" />
               {PERSONAL_INFO.phone}

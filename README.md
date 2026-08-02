@@ -27,7 +27,14 @@ Other scripts:
 yarn build      # production build
 yarn lint       # ESLint
 yarn typecheck  # tsc --noEmit
+yarn test:e2e   # Playwright, against a production build
 ```
+
+The end-to-end suite runs on Desktop Chrome and Pixel 5. It covers the
+navigation (each link scrolls its section under the fixed header, the active
+link tracks scrolling both ways), the mobile menu, the 404 route, and the skip
+link. `playwright.config.ts` builds and starts the app itself, so no server
+needs to be running first.
 
 ## Project Structure
 
@@ -37,6 +44,7 @@ components/sections/  # one file per page section (Hero, Experience, Projects, S
 components/ui/        # reusable components (Navbar, Footer, ThemeToggle, ...)
 lib/constants.ts      # ALL site content/data lives here — edit this to update the site
 public/images/        # images
+tests/                # Playwright end-to-end specs
 ```
 
 ## Editing Content
