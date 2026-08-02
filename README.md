@@ -1,6 +1,9 @@
 # Portfolio — Duc Ngo
 
-Personal portfolio website: a clean, minimalist single-page site with light/dark mode.
+Personal portfolio: a single-page site, dark by default, with a light theme
+behind a toggle.
+
+**Live:** [ngohuynhducdev.vercel.app](https://ngohuynhducdev.vercel.app)
 
 ## Tech Stack
 
@@ -10,7 +13,7 @@ Personal portfolio website: a clean, minimalist single-page site with light/dark
 - [shadcn/ui](https://ui.shadcn.com) + Base UI primitives
 - [Framer Motion](https://www.framer.com/motion/) (scroll-triggered animations, reduced-motion aware)
 - [Lucide](https://lucide.dev) + [Simple Icons](https://simpleicons.org)
-- next-themes (class-based dark mode, light default)
+- next-themes (class-based themes, dark by default, choice remembered)
 
 ## Getting Started
 
@@ -39,13 +42,26 @@ needs to be running first.
 ## Project Structure
 
 ```
-app/                  # layout, page, globals.css, SEO routes (sitemap, robots, OG image)
-components/sections/  # one file per page section (Hero, Experience, Projects, Skills, Contact)
+app/                  # layout, page, 404, globals.css
+                      # generated assets: sitemap, robots, OG image, icons
+components/sections/  # one per page section (Hero, Experience, Projects, Skills, Education, Contact)
 components/ui/        # reusable components (Navbar, Footer, ThemeToggle, ...)
 lib/constants.ts      # ALL site content/data lives here — edit this to update the site
-public/images/        # images
+public/               # images, CV PDF
 tests/                # Playwright end-to-end specs
 ```
+
+## Accessibility and Performance
+
+Verified rather than assumed — each of these was measured against the running
+build:
+
+- every text/background pair in use clears WCAG AA contrast, most clear AAA in
+  the light theme
+- skip link, named landmarks, and `aria-current` on the active nav link
+- interactive targets all clear the 24x24px minimum of WCAG 2.5.8
+- no horizontal overflow from 320px up
+- images served as AVIF with a WebP fallback through `next/image`
 
 ## Editing Content
 
