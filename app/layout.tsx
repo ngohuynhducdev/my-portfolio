@@ -56,13 +56,12 @@ export const metadata: Metadata = {
   },
 };
 
-// Matches app/globals.css light/dark --background so mobile browser chrome
-// (address bar) follows the active theme instead of staying default black.
+// Mobile browser chrome (the address bar) matches the dark --background from
+// app/globals.css. Not keyed to prefers-color-scheme any more: the site no
+// longer follows the OS, so an OS-driven bar colour would just disagree with
+// the page on a light-mode phone.
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-  ],
+  themeColor: "#0f172a",
 };
 
 export default function RootLayout({
@@ -77,9 +76,13 @@ export default function RootLayout({
       className={`${inter.variable} antialiased`}
     >
       <body className="min-h-dvh bg-background text-foreground flex flex-col">
+        {/* Dark is the site's default look; enableSystem is off so a first
+            visit lands on dark whatever the OS is set to. The stored choice
+            still wins on every later visit. */}
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange
         >
           <MotionProvider>
