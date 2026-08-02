@@ -59,7 +59,7 @@ function ProjectCard({ project }: { project: Project }) {
                 href={project.caseStudyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
+                className="flex items-center gap-1.5 py-3 -my-3 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
               >
                 <ExternalLink size={13} aria-hidden="true" />
                 Live Demo
@@ -70,7 +70,7 @@ function ProjectCard({ project }: { project: Project }) {
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
+                className="flex items-center gap-1.5 py-3 -my-3 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
               >
                 <GithubIcon size={14} />
                 GitHub

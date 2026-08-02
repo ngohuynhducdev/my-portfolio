@@ -167,7 +167,9 @@ export default function Hero() {
                 href={PERSONAL_INFO.cvUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-muted-foreground hover:text-foreground transition-colors"
+                /* py-3 lifts the tap target to the CTA's 44px; the row is already
+                   that tall, so nothing moves. */
+                className="inline-flex items-center gap-2 py-3 text-sm font-bold tracking-wide text-muted-foreground hover:text-foreground transition-colors"
               >
                 <FileText size={16} aria-hidden="true" />
                 RESUME
