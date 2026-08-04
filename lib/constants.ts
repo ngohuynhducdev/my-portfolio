@@ -177,7 +177,7 @@ export const PROJECTS = [
     title: "Web Studio",
     description:
       "A template-based landing page platform for small businesses: clients pick a design, customize content via CMS, and deploy to their own domain — with a layered content-fallback system so non-technical clients can safely edit copy without breaking the layout.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Sanity", "Vitest"],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Vitest"],
     image: "/images/project-web-studio.jpg",
     caseStudyUrl: "https://web-studio-chi.vercel.app",
     githubUrl: "https://github.com/ngohuynhducdev/web-studio",
