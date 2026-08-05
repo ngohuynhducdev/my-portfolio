@@ -5,7 +5,8 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { PERSONAL_INFO } from "@/lib/constants";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { EASE } from "@/lib/animation";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
@@ -38,17 +39,20 @@ export default function Contact() {
             me is a direct email.
           </p>
 
-          {/* Email CTA — long addresses have to wrap on narrow screens, so the
+          {/* Email CTA — a real link, so it borrows the CTA styling rather than
+              the Button primitive, which would stamp role="button" over the link
+              semantics. Long addresses have to wrap on narrow screens, so the
               button's default nowrap and fixed height are both relaxed here. */}
-          <Button
-            variant="cta"
-            size="cta"
-            render={<a href={`mailto:${PERSONAL_INFO.email}`} />}
-            className="max-w-full h-auto min-h-11 py-2 whitespace-normal"
+          <a
+            href={`mailto:${PERSONAL_INFO.email}`}
+            className={cn(
+              buttonVariants({ variant: "cta", size: "cta" }),
+              "max-w-full h-auto min-h-11 py-2 whitespace-normal"
+            )}
           >
             <Mail size={16} aria-hidden="true" className="shrink-0" />
             <span className="break-all">{PERSONAL_INFO.email}</span>
-          </Button>
+          </a>
 
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
             <a
