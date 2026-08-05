@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function NotFound() {
   return (
@@ -22,10 +23,13 @@ export default function NotFound() {
       <p className="text-muted-foreground max-w-md">
         The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
-      <Button variant="cta" size="cta" render={<Link href="/" />}>
+      <Link
+        href="/"
+        className={cn(buttonVariants({ variant: "cta", size: "cta" }))}
+      >
         <ArrowLeft size={16} />
         Back to home
-      </Button>
+      </Link>
     </main>
   );
 }
