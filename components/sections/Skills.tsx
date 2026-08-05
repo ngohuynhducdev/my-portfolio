@@ -1,17 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { SKILLS } from "@/lib/constants";
+import { SKILLS, type SkillLevel } from "@/lib/constants";
 import { EASE } from "@/lib/animation";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import SectionHeading from "@/components/ui/SectionHeading";
 
 type Skill = (typeof SKILLS)[keyof typeof SKILLS][number];
 
-// Bar length encodes how often the skill is used.
-const BAR_WIDTHS: Record<Skill["level"], string> = {
-  frequent: "w-full",
-  occasional: "w-1/3",
+// Bar length encodes how often the skill is used, on the CV's four-step scale.
+const BAR_WIDTHS: Record<SkillLevel, string> = {
+  100: "w-full",
+  75: "w-3/4",
+  50: "w-1/2",
+  25: "w-1/4",
 };
 
 // ─── Skill badge: bordered pill with a small tick showing usage frequency ────
@@ -21,7 +23,7 @@ function SkillBadge({
   delay,
 }: {
   name: string;
-  level: Skill["level"];
+  level: SkillLevel;
   delay?: number;
 }) {
   const badge = (
@@ -108,8 +110,10 @@ export default function Skills() {
             transition={{ duration: 0.5, ease: EASE }}
             className="flex flex-wrap gap-3"
           >
-            <SkillBadge name="Frequently Used" level="frequent" />
-            <SkillBadge name="Occasionally" level="occasional" />
+            {/* The CV's legend names only the two ends of the scale, so this
+                one does too. */}
+            <SkillBadge name="Frequently Used" level={100} />
+            <SkillBadge name="Occasionally" level={25} />
           </motion.div>
 
           {CATEGORIES.map(({ key, label }, i) => (
