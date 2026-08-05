@@ -80,38 +80,43 @@ export const PILLARS = [
 ] as const;
 
 // ─── Skills ──────────────────────────────────────────────────────────────────
-// `level` drives the usage-frequency bar under each skill badge:
-// "frequent" = used on most projects, "occasional" = used situationally.
+// `level` is the percentage of the badge the usage bar fills, mirroring the
+// underline under each skill in the CV. That underline runs on a four-step
+// scale; the CV's own legend names only the two ends ("Frequently Used" at 100,
+// "Occasionally" at 25). Nothing currently sits at 75 — the step exists so a
+// skill can move there without reworking the scale.
+export type SkillLevel = 25 | 50 | 75 | 100;
+
 export const SKILLS = {
   languages: [
-    { name: "HTML", level: "frequent" },
-    { name: "CSS / SCSS", level: "frequent" },
-    { name: "TypeScript", level: "frequent" },
-    { name: "JavaScript", level: "frequent" },
+    { name: "HTML", level: 100 },
+    { name: "CSS / SCSS", level: 100 },
+    { name: "TypeScript", level: 100 },
+    { name: "JavaScript", level: 100 },
   ],
   technologies: [
-    { name: "React", level: "frequent" },
-    { name: "Next.js", level: "frequent" },
-    { name: "Tailwind CSS", level: "frequent" },
-    { name: "shadcn/ui", level: "frequent" },
-    { name: "Framer Motion", level: "frequent" },
-    { name: "Jotai", level: "frequent" },
-    { name: "Strapi", level: "frequent" },
-    { name: "REST APIs", level: "frequent" },
-    { name: "Material UI", level: "occasional" },
-    { name: "Vite", level: "occasional" },
-    { name: "Redux", level: "occasional" },
-    { name: "GraphQL", level: "occasional" },
-    { name: "Vitest", level: "occasional" },
+    { name: "React", level: 100 },
+    { name: "Next.js", level: 100 },
+    { name: "Tailwind CSS", level: 100 },
+    { name: "Vite", level: 100 },
+    { name: "Jotai", level: 100 },
+    { name: "Strapi", level: 100 },
+    { name: "GraphQL", level: 100 },
+    { name: "shadcn/ui", level: 50 },
+    { name: "Framer Motion", level: 50 },
+    { name: "Material UI", level: 25 },
+    { name: "Redux", level: 25 },
+    { name: "REST APIs", level: 25 },
+    { name: "Vitest", level: 25 },
   ],
   tools: [
-    { name: "Git / GitHub", level: "frequent" },
-    { name: "VS Code", level: "frequent" },
-    { name: "Vercel", level: "frequent" },
-    { name: "Figma", level: "frequent" },
-    { name: "Postman", level: "occasional" },
-    { name: "Illustrator", level: "occasional" },
-    { name: "Photoshop", level: "occasional" },
+    { name: "Git / GitHub", level: 100 },
+    { name: "VS Code", level: 100 },
+    { name: "Figma", level: 100 },
+    { name: "Vercel", level: 50 },
+    { name: "Postman", level: 50 },
+    { name: "Illustrator", level: 25 },
+    { name: "Photoshop", level: 25 },
   ],
 } as const;
 
