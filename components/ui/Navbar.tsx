@@ -216,6 +216,15 @@ export default function Navbar() {
                   {isActive && (
                     <motion.span
                       layoutId="nav-active"
+                      // Spring rather than the layout default: the underline
+                      // slides between links of very different widths, and a
+                      // fixed duration makes the short hops feel sluggish next
+                      // to the long ones.
+                      transition={{
+                        type: "spring",
+                        stiffness: 420,
+                        damping: 38,
+                      }}
                       className="absolute inset-x-1 -bottom-0.5 h-px bg-primary rounded-full"
                     />
                   )}
@@ -265,7 +274,7 @@ export default function Navbar() {
             <ul className="flex flex-col px-6 py-4 gap-1 max-h-[calc(100dvh-4rem)] overflow-y-auto">
               {NAV_LINKS.map(({ id, label }) => {
                 // Off the home page there is no current section to mark.
-            const isActive = onHome && activeSection === id;
+                const isActive = onHome && activeSection === id;
                 return (
                   <li key={id}>
                     <button

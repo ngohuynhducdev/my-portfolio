@@ -150,7 +150,10 @@
     @apply font-sans;
   }
   /* Smooth anchor scrolling — skipped when the user prefers reduced motion.
-     JS scroll calls use the default "auto" behavior so this rule governs. */
+     Covers only the scrolls this app doesn't drive itself: native `href="#id"`
+     jumps and deep links. The navbar, the hero CTA and the back-to-top button
+     animate their own scroll in lib/scroll.ts, so they no longer depend on
+     this rule applying. */
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;
