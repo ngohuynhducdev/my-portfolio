@@ -6,7 +6,7 @@ import { EASE } from "@/lib/animation";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import SectionHeading from "@/components/ui/SectionHeading";
 
-type Skill = (typeof SKILLS)[keyof typeof SKILLS][number];
+type SkillGroup = (typeof SKILLS)[keyof typeof SKILLS][number];
 
 // Bar length encodes how often the skill is used, on the CV's four-step scale.
 const BAR_WIDTHS: Record<SkillLevel, string> = {
@@ -55,13 +55,17 @@ function SkillBadge({
 // ─── Category block ──────────────────────────────────────────────────────────
 function CategoryBlock({
   label,
-  skills,
+  groups,
   delay,
 }: {
   label: string;
-  skills: readonly Skill[];
+  groups: readonly SkillGroup[];
   delay: number;
 }) {
+  // Badges stagger across the whole category, not per group, so the sub-groups
+  // read as one continuous sweep instead of restarting at every sub-heading.
+  let badgeIndex = 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 32 }}
@@ -71,14 +75,28 @@ function CategoryBlock({
       className="flex flex-col gap-5"
     >
       <h3 className="text-xl font-bold text-foreground">{label}</h3>
-      <div className="flex flex-wrap gap-3">
-        {skills.map((skill, i) => (
-          <SkillBadge
-            key={skill.name}
-            name={skill.name}
-            level={skill.level}
-            delay={delay + 0.04 * i}
-          />
+
+      <div className="flex flex-col gap-6">
+        {groups.map((group, gi) => (
+          // The sub-label always sits above its badges, at every width, so the
+          // whole section shares one left edge — heading, label, and badge row.
+          <div key={group.label ?? gi} className="flex flex-col gap-2.5">
+            {group.label && (
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                {group.label}
+              </p>
+            )}
+            <div className="flex flex-wrap gap-3">
+              {group.items.map((skill) => (
+                <SkillBadge
+                  key={skill.name}
+                  name={skill.name}
+                  level={skill.level}
+                  delay={delay + 0.04 * badgeIndex++}
+                />
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </motion.div>
@@ -120,7 +138,7 @@ export default function Skills() {
             <CategoryBlock
               key={key}
               label={label}
-              skills={SKILLS[key]}
+              groups={SKILLS[key]}
               delay={i * 0.1}
             />
           ))}

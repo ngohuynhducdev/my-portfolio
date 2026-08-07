@@ -87,36 +87,79 @@ export const PILLARS = [
 // skill can move there without reworking the scale.
 export type SkillLevel = 25 | 50 | 75 | 100;
 
+// Each category is a list of sub-groups, mirroring the CV's own breakdown, so
+// related tech sits together rather than being ordered by usage level. A group
+// with a `null` label renders its badges with no sub-heading — used where the
+// category is small enough that a single label would only repeat the category.
 export const SKILLS = {
   languages: [
-    { name: "HTML", level: 100 },
-    { name: "CSS / SCSS", level: 100 },
-    { name: "TypeScript", level: 100 },
-    { name: "JavaScript", level: 100 },
+    {
+      label: null,
+      items: [
+        { name: "HTML", level: 100 },
+        { name: "CSS / SCSS", level: 100 },
+        { name: "TypeScript", level: 100 },
+        { name: "JavaScript", level: 100 },
+      ],
+    },
   ],
   technologies: [
-    { name: "React", level: 100 },
-    { name: "Next.js", level: 100 },
-    { name: "Tailwind CSS", level: 100 },
-    { name: "Vite", level: 100 },
-    { name: "Jotai", level: 100 },
-    { name: "Strapi", level: 100 },
-    { name: "GraphQL", level: 100 },
-    { name: "shadcn/ui", level: 50 },
-    { name: "Framer Motion", level: 50 },
-    { name: "Material UI", level: 25 },
-    { name: "Redux", level: 25 },
-    { name: "REST APIs", level: 25 },
-    { name: "Vitest", level: 25 },
+    {
+      label: "Frameworks",
+      items: [
+        { name: "React", level: 100 },
+        { name: "Next.js", level: 100 },
+        { name: "Remix.js", level: 50 },
+        { name: "Vite", level: 100 },
+      ],
+    },
+    {
+      label: "State",
+      items: [
+        { name: "Jotai", level: 100 },
+        { name: "Redux", level: 25 },
+      ],
+    },
+    {
+      label: "UI & Styling",
+      items: [
+        { name: "Tailwind CSS", level: 100 },
+        { name: "shadcn/ui", level: 50 },
+        { name: "Framer Motion", level: 50 },
+        { name: "Material UI", level: 25 },
+      ],
+    },
+    {
+      label: "Backend",
+      items: [
+        { name: "Strapi", level: 100 },
+        { name: "GraphQL", level: 100 },
+        { name: "REST APIs", level: 25 },
+      ],
+    },
+    {
+      label: "Testing",
+      items: [{ name: "Vitest", level: 25 }],
+    },
   ],
   tools: [
-    { name: "Git / GitHub", level: 100 },
-    { name: "VS Code", level: 100 },
-    { name: "Figma", level: 100 },
-    { name: "Vercel", level: 50 },
-    { name: "Postman", level: 50 },
-    { name: "Illustrator", level: 25 },
-    { name: "Photoshop", level: 25 },
+    {
+      label: "Coder",
+      items: [
+        { name: "VS Code", level: 100 },
+        { name: "Git / GitHub", level: 100 },
+        { name: "Vercel", level: 50 },
+        { name: "Postman", level: 50 },
+      ],
+    },
+    {
+      label: "Designer",
+      items: [
+        { name: "Figma", level: 100 },
+        { name: "Illustrator", level: 25 },
+        { name: "Photoshop", level: 25 },
+      ],
+    },
   ],
 } as const;
 
