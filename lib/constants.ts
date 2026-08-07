@@ -5,7 +5,7 @@ export const SITE = {
   // Split in two so the logo can colour the halves differently.
   brand: { first: "duc", second: "dev" },
   description:
-    "Portfolio of Duc Ngo — front-end developer with 4 years building web applications with React, Next.js, and TypeScript at Gameloft.",
+    "Portfolio of Duc Ngo — front-end developer with 4 years building web applications with React, Next.js, Remix.js, and TypeScript at Gameloft.",
   url: "https://ngohuynhducdev.vercel.app",
   ogImageAlt: "Duc Ngo — Front-End Developer portfolio",
   locale: "en_US",
@@ -171,7 +171,7 @@ export const EXPERIENCE = [
     company: "Gameloft",
     period: "May 2022 — Present",
     bullets: [
-      "Built and maintained responsive, high-traffic web pages and marketing sites for Gameloft's global products using React, Next.js, Remix.js, and TypeScript.",
+      "Built and maintained responsive, high-traffic web pages and marketing sites for Gameloft's global products using React, Next.js, Remix.js and TypeScript.",
       "Translated Figma designs into responsive, cross-browser-compatible interfaces.",
       "Improved page-load performance through code splitting, image optimization, and bundle-size reduction.",
       "Developed a library of 20+ reusable UI components, cutting feature-development time and keeping the UI consistent across projects.",
@@ -217,7 +217,7 @@ export const PROJECTS = [
     id: "ecommerce",
     title: "Furniture E-Commerce Store",
     description:
-      "A furniture e-commerce site with a complete purchase flow — browsing, cart, checkout, and order confirmation — backed by a decoupled Strapi CMS. Cart, wishlist, and order data persist via Jotai, with session-based auth on protected routes. Automated unit/e2e testing, CI/CD, and a Lighthouse Accessibility score of 100.",
+      "A furniture e-commerce site with a complete purchase flow — browsing, cart, checkout, and order confirmation — backed by a decoupled Strapi CMS. Cart, wishlist, and order data persist via Jotai, with session-based auth on protected routes. Tested with Vitest, and scores 100 on Lighthouse Accessibility.",
     tags: [
       "Next.js",
       "TypeScript",
@@ -234,7 +234,7 @@ export const PROJECTS = [
     id: "web-studio",
     title: "Web Studio",
     description:
-      "A template-based landing page platform for small businesses: clients pick a design, customize content via CMS, and deploy to their own domain — with a layered content-fallback system so non-technical clients can safely edit copy without breaking the layout.",
+      "A template-driven landing page platform for small businesses, starting with three spa templates: clients choose a design, customize content through a headless CMS, and publish to their own domain. Tested with Vitest.",
     tags: ["Next.js", "TypeScript", "Tailwind CSS", "Vitest"],
     image: "/images/project-web-studio.jpg",
     caseStudyUrl: "https://web-studio-chi.vercel.app",
